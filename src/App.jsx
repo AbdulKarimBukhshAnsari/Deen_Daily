@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import Header from './components/Header'
+import HeroSection from './view/Dashboard/components/HeroSection'
 
 
 function App() {
@@ -6,7 +8,8 @@ function App() {
 
   return (
     <>
-    Hello World
+    <Header />
+    <HeroSection />
     </>
   )
 }
