@@ -1,8 +1,28 @@
 import { BookOpen, Parentheses } from "lucide-react";
-import React from "react";
-import Button1 from "../../../components/ui/Buttons/Button1jsx";
+import React, { useState ,useEffect } from "react";
+import Button1 from "../../../components/ui/Buttons/Button1.jsx";
 
 function HeroSection() {
+  const [currentDate , setCurrentDate] = useState('') ;
+
+
+  // for fetching the current date and day 
+  useEffect(() => {
+     const fetchDate = async () =>{
+        const dateData = await fetch('https://api.aladhan.com/v1/gToH?city=Karachi&country=Pakistan');
+        const dataFinal = await dateData.json();
+        console.log(dataFinal);
+        setCurrentDate(`${dataFinal.data.gregorian.weekday.en}, ${dataFinal.data.hijri.day} ${dataFinal.data.hijri.month.en}`)
+        console.log(`${dataFinal.data.gregorian.weekday.en}, ${dataFinal.data.hijri.day} ${dataFinal.data.hijri.month.en}`)
+
+     }
+     fetchDate();
+     
+     
+  }, [])
+  
+
+
   return (
     <section className="bg-[#F8F4E1] py-16 md:py-24">
       <div className="container mx-auto px-6">
@@ -22,10 +42,6 @@ function HeroSection() {
               providing personalized recommendations to strengthen your faith
               journey.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-                <Button1 text = 'Get Started' />
-                <Button1 text = 'Learn More' />
-            </div>
           </div>
           <div className="md:w-1/2 flex justify-center">
             <div className="relative w-full max-w-md">
@@ -39,7 +55,7 @@ function HeroSection() {
                     </h3>
                   </div>
                   <span className="text-sm text-[#74512D] font-medium">
-                    Friday, 12 Rajab
+                    {currentDate}
                   </span>
                 </div>
                 <div className="space-y-4 mb-6">

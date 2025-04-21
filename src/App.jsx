@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Header from './components/Header'
 import HeroSection from './view/Dashboard/components/HeroSection'
+import FeatureSection from './view/Dashboard/components/FeatureSection'
 
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
     <>
     <Header />
     <HeroSection />
+    <FeatureSection />
     </>
   )
 }
