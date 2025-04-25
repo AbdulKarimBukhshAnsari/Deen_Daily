@@ -1,13 +1,12 @@
+import FeatureSection from "./components/FeatureSection";
+import HeroSection from "./components/HeroSection";
 
-
-function Dashboarad(){
-
-    return (
-        <>
-            Home Main Page
-        </>
-    )
-
-
+function Dashboarad() {
+  return (
+    <>
+      <HeroSection />
+      <FeatureSection />
+    </>
+  );
 }
-export default Dashboarad
+export default Dashboarad;

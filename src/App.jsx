@@ -2,6 +2,8 @@ import { useState } from 'react'
 import Header from './components/Header'
 import HeroSection from './view/Dashboard/components/HeroSection'
 import FeatureSection from './view/Dashboard/components/FeatureSection'
+import AppRouter from './config/routing/router'
+
 
 
 function App() {
@@ -10,8 +12,7 @@ function App() {
   return (
     <>
     <Header />
-    <HeroSection />
-    <FeatureSection />
+    <AppRouter />
     </>
   )
 }
