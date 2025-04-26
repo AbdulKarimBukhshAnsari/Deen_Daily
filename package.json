@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.0",
     "@tailwindcss/vite": "^4.1.4",
     "lucide-react": "^0.501.0",
     "react": "^19.0.0",
