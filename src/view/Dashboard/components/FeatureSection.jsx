@@ -51,6 +51,7 @@ function FeatureSection() {
             buttonText={featureDetails[0].buttonText}
             featureList={featureDetails[0].featureList}
             Icon={featureDetails[0].Icon}
+            link= '/tracker'
           />
 
           {/* This is for the second one which is for the Customize reflection */}
@@ -60,6 +61,7 @@ function FeatureSection() {
             buttonText={featureDetails[1].buttonText}
             featureList={featureDetails[1].featureList}
             Icon={featureDetails[1].Icon}
+            link= '/reflections'
           />
         </div>
       </div>

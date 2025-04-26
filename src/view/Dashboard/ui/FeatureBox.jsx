@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-function FeatureBox({ title, details, featureList , buttonText , Icon }) {
+function FeatureBox({ title, details, featureList , buttonText , Icon , link }) {
   return (
     <div className="bg-[#F8F4E1] rounded-2xl p-8 shadow-md hover:shadow-lg transition-shadow duration-300 border-2 border-[#74512D]/10">
       <div className="h-16 w-16 rounded-full bg-[#74512D]/10 flex items-center justify-center mb-6">
@@ -22,9 +23,11 @@ function FeatureBox({ title, details, featureList , buttonText , Icon }) {
           </li>
         ))}
       </ul>
-      <button className="py-2 px-4 bg-[#74512D] text-white rounded-lg hover:bg-[#74512D]/90 transition-colors">
+      <Link to = {link} >
+      <button className="py-2 px-4 bg-[#74512D] text-white rounded-lg hover:bg-[#74512D]/90 transition-colors cursor-pointer">
         {buttonText}
       </button>
+      </Link>
     </div>
   );
 }
