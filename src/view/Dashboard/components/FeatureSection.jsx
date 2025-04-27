@@ -46,6 +46,7 @@ function FeatureSection() {
         <div className="flex md:flex-nowrap flex-wrap gap-8 md:gap-12">
           {/* This is for the 1st section which is basically for the Salah Tracker  */}
           <FeatureBox
+            key={1}
             title={featureDetails[0].title}
             details={featureDetails[0].details}
             buttonText={featureDetails[0].buttonText}
@@ -56,6 +57,7 @@ function FeatureSection() {
 
           {/* This is for the second one which is for the Customize reflection */}
           <FeatureBox
+            key={2}
             title={featureDetails[1].title}
             details={featureDetails[1].details}
             buttonText={featureDetails[1].buttonText}

@@ -3,6 +3,7 @@ import { Heart } from "lucide-react";
 import FeelingInput from "./components/feelingInput";
 import PageDecorator from "./ui/PageDecorator";
 import MoodProvider from "../../config/context/MoodProvider";
+import DeedsList from "./components/deedsList";
 
 function Reflections() {
   return (
@@ -13,7 +14,11 @@ function Reflections() {
             Mindful Moments <Heart size={24} className="text-[#9B7E5D]" />
           </h1>
           <PageDecorator />
+          <div className="flex flex-col gap-7">
           <FeelingInput />
+          <DeedsList />
+          </div>
+          
         </div>
       </div>
     </MoodProvider>

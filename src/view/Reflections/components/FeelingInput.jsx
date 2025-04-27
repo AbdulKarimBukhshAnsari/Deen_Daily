@@ -9,7 +9,7 @@ function FeelingInput() {
   const [inputValue, setInputValue] = useState("");
   const { setMood, mood } = useMoodContext();
 
-  const [promptResponse, setPromptResponse] = useState([]);
+  const [promptResponse, setPromptResponse] = useState('');
 
   const prompt = `
     Based on the following mood: ${inputValue}, suggest 5 Islamic good deeds that are spiritually uplifting and can be done in a very short time.
@@ -86,12 +86,32 @@ Only respond with JSON, no explanation.
     } catch (error) {
       console.error("Error generating content:", error);
     }
+
+
   };
 
-  useEffect(() => {
-    console.log("response:", promptResponse);
-  }, [promptResponse]);
 
+  // for Saving Prompts into the local storage 
+  useEffect(() => {
+    if(promptResponse !== '') {
+      console.log(promptResponse);
+      const deeds = promptResponse[0].goodDeeds.map((deed) => ({
+        deed: deed,
+        done: false
+      }));
+      console.log(deeds);
+      localStorage.setItem('deeds', JSON.stringify(deeds));
+      localStorage.setItem('hadees' , JSON.stringify(promptResponse[1]))
+      localStorage.setItem('quran' , JSON.stringify(promptResponse[2]))
+      window.dispatchEvent(new Event('localStorageUpdated')); 
+      
+    }
+  }, [promptResponse]);
+  
+
+
+
+  // handle the form submission 
   const handleSubmit = (e) => {
     e.preventDefault();
     setMood(inputValue);
@@ -100,7 +120,7 @@ Only respond with JSON, no explanation.
 
   return (
     <>
-      <section className="bg-white  p-6 rounded-lg shadow-md animate-fade-in">
+      <section className="bg-white/70  p-6 rounded-lg shadow-md animate-fade-in">
         <h2 className="text-xl md:text-2xl font-serif text-[#74512D] mb-4 text-center">
           How are you feeling today?
         </h2>
