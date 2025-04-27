@@ -6,17 +6,18 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 function FeelingInput() {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(JSON.parse(localStorage.getItem('mood')) || '');
   const { setMood, mood } = useMoodContext();
-
   const [promptResponse, setPromptResponse] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const prompt = `
     Based on the following mood: ${inputValue}, suggest 5 Islamic good deeds that are spiritually uplifting and can be done in a very short time.
 
 Each good deed must:
 - Be relevant to the given feeling
-- Be 10 words or fewer
+- Be 15 words or fewer
 - Be written in plain English
 
 Also provide:
@@ -61,10 +62,20 @@ The response should be formatted strictly as valid JSON like this:
 Only respond with JSON, no explanation.  
   `;
 
-
   // for getting the response from Gemini AI 
   const getResponse = async () => {
+    setIsLoading(true);
+    setError(null);
+
     try {
+      if (!API_KEY) {
+        throw new Error('API key is not configured');
+      }
+
+      if (!inputValue.trim()) {
+        throw new Error('Please enter your feelings first');
+      }
+
       const model = genAI.getGenerativeModel({ 
         model: "gemini-2.0-flash", 
         generationConfig: {
@@ -76,20 +87,31 @@ Only respond with JSON, no explanation.
       });
 
       const result = await model.generateContent(prompt);
+      
+      if (!result || !result.response) {
+        throw new Error('No response received from AI');
+      }
+
       const response = await result.response;
       const text = response.text();
       
       // Remove any markdown formatting and parse JSON
       const cleanText = text.replace(/```json\n|\n```/g, '').trim();
-      const jsonData = JSON.parse(cleanText);
-      setPromptResponse(jsonData);
+      
+      try {
+        const jsonData = JSON.parse(cleanText);
+        setPromptResponse(jsonData);
+      } catch (jsonError) {
+        throw new Error('Failed to parse AI response');
+      }
+
     } catch (error) {
       console.error("Error generating content:", error);
+      setError(error.message || 'Failed to generate response. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-
-
   };
-
 
   // for Saving Prompts into the local storage 
   useEffect(() => {
@@ -108,23 +130,20 @@ Only respond with JSON, no explanation.
     }
   }, [promptResponse]);
   
-
-
-
   // handle the form submission 
   const handleSubmit = (e) => {
     e.preventDefault();
     setMood(inputValue);
+    localStorage.setItem('mood' , JSON.stringify(inputValue));
     getResponse();
   };
 
   return (
     <>
-      <section className="bg-white/70  p-6 rounded-lg shadow-md animate-fade-in">
+      <section className="bg-white/70 p-6 rounded-lg shadow-md animate-fade-in">
         <h2 className="text-xl md:text-2xl font-serif text-[#74512D] mb-4 text-center">
           How are you feeling today?
         </h2>
-        {/* For for handling the submission of the input  */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
             <textarea
@@ -132,7 +151,8 @@ Only respond with JSON, no explanation.
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Express your feelings here..."
               className={`text-lg w-full p-4 border border-[#9B7E5D] rounded-md bg-[#F8F4E1] focus:outline-none focus:ring-2 focus:ring-[#74512D] transition-all min-h-[120px] text-[#4E1F00]
-              }`}
+              ${error ? 'border-red-500' : ''}`}
+              disabled={isLoading}
               autoFocus
             />
             <div className="absolute bottom-2 right-2 text-xs text-[#9B7E5D]/70">
@@ -140,11 +160,19 @@ Only respond with JSON, no explanation.
             </div>
           </div>
 
+          {error && (
+            <div className="text-red-500 text-sm mt-2">
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-[#74512D] text-white rounded-md hover:bg-primary-dark transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#9B7E5D] font-medium"
+            className={`w-full py-2 px-4 bg-[#74512D] text-white rounded-md hover:bg-primary-dark transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#9B7E5D] font-medium
+            ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={isLoading}
           >
-            Reflect
+            {isLoading ? 'Processing...' : 'Reflect'}
           </button>
         </form>
       </section>
