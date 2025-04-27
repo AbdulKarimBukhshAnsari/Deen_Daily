@@ -22,12 +22,12 @@ Each good deed must:
 
 Also provide:
 1. One Hadith:
-   - Arabic text (max 10 words)
+   - Arabic text (max 20 words)
    - English translation (translation of that Arabic)
    - Proper reference (e.g., Sahih al-Bukhari 94:5)
 
 2. One Quranic Ayah:
-   - Arabic text (max 10 words)
+   - Arabic text (max 20 words)
    - English translation (translation of that Arabic)
    - Proper reference (e.g., Surah Ash-Sharh 94:5-6)
 

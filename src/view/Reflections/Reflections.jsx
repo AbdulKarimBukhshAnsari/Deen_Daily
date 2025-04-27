@@ -1,4 +1,4 @@
-import React ,  {useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import FeelingInput from "./components/feelingInput";
 import PageDecorator from "./ui/PageDecorator";
@@ -7,10 +7,10 @@ import DeedsList from "./components/deedsList";
 import Verses from "./components/Verses";
 
 function Reflections() {
-  const [quran, setQuran] = useState('');
-  const [hadees, setHadees] = useState()
+  const [quran, setQuran] = useState("");
+  const [hadees, setHadees] = useState();
 
-  // making track of the hadees and Quran Ayah chnages 
+  // making track of the hadees and Quran Ayah chnages
   useEffect(() => {
     // getting the deeds from the local stoarge at the start
     const storedQuran = JSON.parse(localStorage.getItem("quran"));
@@ -28,20 +28,16 @@ function Reflections() {
       const newStoredQuran = JSON.parse(localStorage.getItem("quran"));
       const newStoredHadees = JSON.parse(localStorage.getItem("hadees"));
       if (newStoredHadees) {
-    
         // Reset completion status when deeds change
         setHadees(newStoredHadees);
-      }
-      else {
-        setHadees('');
+      } else {
+        setHadees("");
       }
       if (newStoredQuran) {
-    
         // Reset completion status when deeds change
         setQuran(newStoredQuran);
-      }
-      else {
-        setQuran('');
+      } else {
+        setQuran("");
       }
     };
 
@@ -54,15 +50,6 @@ function Reflections() {
     };
   }, []);
 
-
-
-
-
-
-
-
-
-
   return (
     <MoodProvider>
       <div className="bg-[#F8F4E1] flex justify-center min-h-screen pb-4">
@@ -72,20 +59,15 @@ function Reflections() {
           </h1>
           <PageDecorator />
           <div className="flex flex-col gap-7">
-          <FeelingInput />
-          <DeedsList />
-          <Verses
-          key={'Quran'}
-          verse={quran.Quran}
-          type={'Quran'}
-          />
-          <Verses
-          key={'Hadees'}
-          verse={hadees.hadees}
-          type={'Hadees'}
-          />
+            <FeelingInput />
+            <DeedsList />
+            {quran.Quran && hadees.hadees && (
+              <>
+                <Verses key={"Quran"} verse={quran.Quran} type={"Quran"} />
+                <Verses key={"Hadees"} verse={hadees.hadees} type={"Hadees"} />
+              </>
+            )}
           </div>
-          
         </div>
       </div>
     </MoodProvider>
