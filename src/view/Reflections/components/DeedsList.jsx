@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Check, CheckCircle2, Circle } from "lucide-react";
 
 function DeedsList() {
-  const [deeds, setDeeds] = useState(null);
   const [completed, setCompleted] = useState([]);
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -18,20 +17,25 @@ function DeedsList() {
     }
   }, [completed]);
 
+
+
   useEffect(() => {
     // getting the deeds from the local stoarge at the start
     const storedDeeds = JSON.parse(localStorage.getItem("deeds"));
     if (storedDeeds) {
-      setDeeds(storedDeeds);
+     
       setCompleted(storedDeeds);
     }
     // getting the deeds when the deeds will be updated
     const checkForUpdates = () => {
       const newDeeds = JSON.parse(localStorage.getItem("deeds"));
       if (newDeeds) {
-        setDeeds(newDeeds);
+    
         // Reset completion status when deeds change
         setCompleted(newDeeds);
+      }
+      else {
+        setCompleted([]);
       }
     };
 
@@ -49,6 +53,8 @@ function DeedsList() {
       const newCompleted = [...prev];
       newCompleted[index].done = !newCompleted[index].done;
 
+     
+
       // Check if all deeds are completed
       if (newCompleted.every((deed) => deed.done)) {
         setShowConfetti(true);
@@ -58,7 +64,7 @@ function DeedsList() {
     });
   };
 
-  if (!deeds || deeds.length === 0) return null;
+  if (!completed || completed.length === 0) return null;
 
   return (
     <section className="bg-white/70 p-6 rounded-lg shadow-md animate-slide-up">
@@ -67,7 +73,7 @@ function DeedsList() {
       </h2>
 
       <ul className="space-y-3">
-        {deeds.map((deed, index) => (
+        {completed.map((deed, index) => (
           <li
             key={index}
             className={`flex items-center p-3 border border-[#9B7E5D] rounded-md transition-all  ${
