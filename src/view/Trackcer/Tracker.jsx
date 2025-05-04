@@ -1,40 +1,19 @@
-import {useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import PageDecorator from "../../components/ui/PageDecorator";
-import { PrayerTimes , Coordinates , CalculationMethod } from "adhan";
 import { Heart } from "lucide-react";
-import { format } from "date-fns";
+import HeaderNextPrayer from "./components/HeaderNextPrayer";
+
 
 function Tracker() {
-  const [currentDate, setCurrentDate] = useState(null);
-  const [currentTime, setCurrentTime] = useState(second)
-  const [nextPrayer, setNextPrayer] = useState(null);
-  const [timeRemaining, setTimeRemaining] = useState(null);
-  const [currentIslamicDate, setCurrentIslamicDate] = useState(null);
-
-
-  // for getting the islamic date and the georgian date
-  useEffect(() => {
-      const fetchIslamicDate = async () =>{
-         const dateData = await fetch('https://api.aladhan.com/v1/gToH?city=Karachi&country=Pakistan');
-         const dataFinal = await dateData.json();
-         console.log(dataFinal);
-         setCurrentIslamicDate(`${dataFinal.data.hijri.day}/${dataFinal.data.hijri.month.number}/${dataFinal.data.hijri.year} Hijri`) 
-      }
-      fetchIslamicDate();
-      setCurrentDate(format(new Date , 'EEEE, MMMM d, yyyy'))
-   }, [])
-
-   // for setting and properly updating the time after each and every sec
-   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-
-
-
+  const [prayerTimes, setPrayerTimes] = useState(null);
+  const animation = {
+    'fade-in': 'fadeIn 0.5s ease-in',
+    'slide-up': 'slideUp 0.5s ease-out',
+    'pulse-once': 'pulse 1s ease-in-out',
+    'float': 'float 6s ease-in-out infinite',
+    'glow': 'glow 2s ease-in-out infinite',
+  }
+  
 
   return (
     <div className="bg-[#F8F4E1] flex justify-center min-h-screen pb-4">
@@ -44,8 +23,7 @@ function Tracker() {
         </h1>
         <PageDecorator />
         <div className="flex flex-col gap-7">
-
-         
+          <HeaderNextPrayer prayerTimes={prayerTimes} setPrayerTimes={setPrayerTimes} animation = {animation} />
         </div>
       </div>
     </div>
