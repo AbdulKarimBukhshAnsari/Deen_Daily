@@ -24,6 +24,8 @@ function HeaderNextPrayer({ prayerTimes, setPrayerTimes, animation }) {
       const method = CalculationMethod.MuslimWorldLeague();
 
       const todayTimes = new PrayerTimes(coordinates, today, method);
+   
+   
       const tomorrowTimes = new PrayerTimes(coordinates, tomorrow, method);
    
 
