@@ -104,11 +104,11 @@ function HeaderNextPrayer({ prayerTimes, setPrayerTimes, animation }) {
 
         return start <= now && now < end;
       });
-      setCurrentPrayer(activePrayer || 'Isha');
+      setCurrentPrayer(activePrayer || 'Sunrise');
     }
   }, [prayerTimes, currentTime]);
 
-  // Update time remaining for the current prayer
+  // Update time remaining for the current prayer 
   useEffect(() => {
     let timer = null;
 
