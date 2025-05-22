@@ -79,6 +79,8 @@ function HeaderNextPrayer({ prayerTimes, setPrayerTimes, animation }) {
     setCurrentDate(format(new Date(), "EEEE, MMMM d, yyyy"));
   }, [setPrayerTimes]);
 
+
+  
   // Update current time every second
   useEffect(() => {
     const timer = setInterval(() => {
