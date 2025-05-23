@@ -2,17 +2,11 @@ import { useState, useEffect } from "react";
 import PageDecorator from "../../components/ui/PageDecorator";
 import { Heart } from "lucide-react";
 import HeaderNextPrayer from "./components/HeaderNextPrayer";
-
+import PrayerTimes from "./components/PrayerTimes";
 
 function Tracker() {
-  const [prayerTimes, setPrayerTimes] = useState(null);
-  const animation = {
-    'fade-in': 'fadeIn 0.5s ease-in',
-    'slide-up': 'slideUp 0.5s ease-out',
-    'pulse-once': 'pulse 1s ease-in-out',
-    'float': 'float 6s ease-in-out infinite',
-    'glow': 'glow 2s ease-in-out infinite',
-  }
+  const [prayerTimes, setPrayerTimes] = useState({});
+
   
 
   return (
@@ -23,7 +17,11 @@ function Tracker() {
         </h1>
         <PageDecorator />
         <div className="flex flex-col gap-7">
-          <HeaderNextPrayer prayerTimes={prayerTimes} setPrayerTimes={setPrayerTimes} animation = {animation} />
+          <HeaderNextPrayer prayerTimes={prayerTimes} setPrayerTimes={setPrayerTimes} />
+          <div className="prayerTime-prayersTracker">
+            <PrayerTimes prayerTimes = {prayerTimes} />
+
+          </div>
         </div>
       </div>
     </div>

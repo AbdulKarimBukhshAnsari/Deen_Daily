@@ -6,7 +6,7 @@ import { Calendar, Moon, Clock } from "lucide-react";
 const FALLBACK_LAT = 24.8607;
 const FALLBACK_LNG = 67.0011;
 
-function HeaderNextPrayer({ prayerTimes, setPrayerTimes, animation }) {
+function HeaderNextPrayer({ prayerTimes, setPrayerTimes}) {
   const [currentDate, setCurrentDate] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentPrayer, setCurrentPrayer] = useState(null);
@@ -123,10 +123,6 @@ function HeaderNextPrayer({ prayerTimes, setPrayerTimes, animation }) {
       }, 1000);
     }
 
-
-    
-
-
     return () => clearInterval(timer);
   }, [currentPrayer, prayerTimes]);
 
@@ -142,7 +138,7 @@ function HeaderNextPrayer({ prayerTimes, setPrayerTimes, animation }) {
               {currentTime && format(currentTime, "EEEE, MMMM d, yyyy")}
             </h2>
             <div className="flex items-center gap-2 text-[#9B7E5D] font-serif mt-2">
-              <Moon className={`h-5 w-5 ${animation["glow"]}`} />
+              <Moon className={`h-5 w-5`} />
               {currentIslamicDate}
             </div>
           </div>
@@ -150,7 +146,7 @@ function HeaderNextPrayer({ prayerTimes, setPrayerTimes, animation }) {
 
         {prayerTimes && (
           <div className="flex items-center gap-4">
-            <Clock className="h-6 w-6 text-[#74512D] animate-float" />
+            <Clock className="h-6 w-6 text-[#74512D] " />
             <div>
               <h3 className="text-xl font-serif text-[#74512D]">
                 Current Prayer: {currentPrayer}
