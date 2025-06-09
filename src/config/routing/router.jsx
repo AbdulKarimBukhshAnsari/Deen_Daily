@@ -10,7 +10,6 @@ function AppRouter(){
             <Route path="/" element ={<Dashboarad />} />
             <Route path="/tracker" element ={<Tracker />} />
             <Route path="/reflections" element ={<Reflections />} />
-            
         </Routes>
     )
 };

@@ -18,8 +18,10 @@ function Tracker() {
         <PageDecorator />
         <div className="flex flex-col gap-7">
           <HeaderNextPrayer prayerTimes={prayerTimes} setPrayerTimes={setPrayerTimes} />
-          <div className="prayerTime-prayersTracker">
+          <div className="prayerTime-prayersTracker flex  ">
             <PrayerTimes prayerTimes = {prayerTimes} />
+            
+        
 
           </div>
         </div>
