@@ -3,6 +3,7 @@ import PageDecorator from "../../components/ui/PageDecorator";
 import { Heart } from "lucide-react";
 import HeaderNextPrayer from "./components/HeaderNextPrayer";
 import PrayerTimes from "./components/PrayerTimes";
+import PrayerTracker from "./components/PrayerTracker";
 
 
 function Tracker() {
@@ -20,9 +21,9 @@ function Tracker() {
             prayerTimes={prayerTimes}
             setPrayerTimes={setPrayerTimes}
           />
-          <div className="prayerTime-prayersTracker flex">
+          <div className="prayerTime-prayersTracker flex flex-col md:flex-row gap-4 md:gap-2">
             <PrayerTimes prayerTimes={prayerTimes} />
-       
+            <PrayerTracker />
           </div>
         </div>
       </div>
