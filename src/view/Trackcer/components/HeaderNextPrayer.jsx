@@ -25,19 +25,20 @@ function HeaderNextPrayer({ prayerTimes, setPrayerTimes}) {
       const method = CalculationMethod.MuslimWorldLeague();
 
       const todayTimes = new PrayerTimes(coordinates, today, method);
-   
-   
+
       const tomorrowTimes = new PrayerTimes(coordinates, tomorrow, method);
    
+      console.log("Today Times" , todayTimes);
 
-      const fullPrayerTimes = {
-        Fajr: { start: todayTimes.fajr, end: todayTimes.sunrise },
-        Dhuhr: { start: todayTimes.dhuhr, end: todayTimes.asr },
-        Asr: { start: todayTimes.asr, end: todayTimes.maghrib },
-        Maghrib: { start: todayTimes.maghrib, end: todayTimes.isha },
-        Isha: { start: todayTimes.isha, end: tomorrowTimes.fajr },
-      };
-      console.log('full prayer times',fullPrayerTimes)
+      const fullPrayerTimes = [
+        { name: 'Fajr', start: todayTimes.fajr, end: todayTimes.sunrise },
+        { name: 'Sunrise', start: todayTimes.sunrise, end: todayTimes.dhuhr },
+        { name: 'Dhuhr', start: todayTimes.dhuhr, end: todayTimes.asr },
+        { name: 'Asr', start: todayTimes.asr, end: todayTimes.maghrib },
+        { name: 'Maghrib', start: todayTimes.maghrib, end: todayTimes.isha },
+        { name: 'Isha', start: todayTimes.isha, end: tomorrowTimes.fajr },
+      ];
+      console.log('Full prayer times:', fullPrayerTimes);
       setPrayerTimes(fullPrayerTimes);
     };
 
@@ -92,34 +93,36 @@ function HeaderNextPrayer({ prayerTimes, setPrayerTimes}) {
 
   // Determine current prayer
   useEffect(() => {
-    if (prayerTimes && currentTime) {
-      const prayers = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+    if (prayerTimes && prayerTimes.length > 0 && currentTime) {
       const now = currentTime;
 
-      const activePrayer = prayers.find((prayer) => {
-        const start = prayerTimes[prayer]?.start;
-        let end = prayerTimes[prayer]?.end;
+      const activePrayer = prayerTimes.find(prayer => {
+        const { start, end } = prayer;
         if (!start || !end) return false;
 
+        // Handle cases where the end time is on the next day
+        let adjustedEnd = end;
         if (end < start) {
-          end = new Date(end.getTime() + 24 * 60 * 60 * 1000);
+          adjustedEnd = new Date(end.getTime() + 24 * 60 * 60 * 1000);
         }
 
-        return start <= now && now < end;
+        return start <= now && now < adjustedEnd;
       });
-      setCurrentPrayer(activePrayer || 'Sunrise');
+
+      console.log('Active Prayer:', activePrayer?.name);
+      setCurrentPrayer(activePrayer?.name || "None");
     }
   }, [prayerTimes, currentTime]);
 
-  // Update time remaining for the current prayer 
+  // Update time remaining
   useEffect(() => {
     let timer = null;
 
     if (currentPrayer && prayerTimes) {
       timer = setInterval(() => {
-        const endTime = prayerTimes[currentPrayer]?.end;
-        if (endTime) {
-          setTimeRemaining(formatDistanceToNow(endTime, { addSuffix: true }));
+        const currentPrayerData = prayerTimes.find(prayer => prayer.name === currentPrayer);
+        if (currentPrayerData?.end) {
+          setTimeRemaining(formatDistanceToNow(currentPrayerData.end, { addSuffix: true }));
         }
       }, 1000);
     }
@@ -145,7 +148,7 @@ function HeaderNextPrayer({ prayerTimes, setPrayerTimes}) {
           </div>
         </div>
 
-        {prayerTimes && (
+        {prayerTimes && prayerTimes.length > 0 && (
           <div className="flex items-center gap-4">
             <Clock className="h-6 w-6 text-[#74512D] " />
             <div>
@@ -153,11 +156,10 @@ function HeaderNextPrayer({ prayerTimes, setPrayerTimes}) {
                 Current Prayer: {currentPrayer}
               </h3>
               <div className="text-lg text-[#9B7E5D]">
-                Time Remaining {timeRemaining}
+                Time Remaining : {timeRemaining}
               </div>
               <div className="text-[#4E1F00] mt-1 font-medium">
-                {prayerTimes[currentPrayer]?.end &&
-                  format(prayerTimes[currentPrayer].end, "h:mm a")}
+                {currentPrayer && format(prayerTimes.find(p => p.name === currentPrayer)?.end, "h:mm a")}
               </div>
             </div>
           </div>
