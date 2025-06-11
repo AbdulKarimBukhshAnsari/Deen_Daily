@@ -1,6 +1,7 @@
-import { useState} from "react";
+import { useState } from "react";
 import { Book, Save } from "lucide-react";
 import { formatDate, getDaysBetweenDates } from "../../../utils/dateUtils";
+import toast from 'react-hot-toast';
 
 function QuranTracker() {
   const [tilawatTracker, setTilawatTracker] = useState(() => {
@@ -46,6 +47,15 @@ function QuranTracker() {
   // to save the data of the Quran Reading in the local storage 
   const saveTilawatPages = () => {
     localStorage.setItem('QuranTrackerData', JSON.stringify(tilawatTracker));
+    toast.success('Successfully saved your Quran reading progress!', {
+      style: {
+        background: '#74512D',
+        color: '#fff',
+        borderRadius: '8px',
+      },
+      icon: '📖',
+      duration: 3000,
+    });
   };
 
   return (

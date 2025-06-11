@@ -1,7 +1,6 @@
 import { useState } from 'react'
+import { Toaster } from 'react-hot-toast';
 import Header from './components/Header'
-import HeroSection from './view/Dashboard/components/HeroSection'
-import FeatureSection from './view/Dashboard/components/FeatureSection'
 import AppRouter from './config/routing/router'
 
 
@@ -13,6 +12,8 @@ function App() {
     <>
     <Header />
     <AppRouter />
+    {/* To show the temporary msg to the user  */}
+    <Toaster position="bottom-right" />
     </>
   )
 }
