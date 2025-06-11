@@ -1,6 +1,7 @@
 import { BookOpen, Parentheses } from "lucide-react";
-import React, { useState ,useEffect } from "react";
-import Button1 from "../../../components/ui/Buttons/Button1.jsx";
+import  { useState ,useEffect } from "react";
+import { Link } from "react-router-dom";
+
 
 function HeroSection() {
   const [currentDate , setCurrentDate] = useState('') ;
@@ -74,9 +75,11 @@ function HeroSection() {
                     <span className="text-[#4E1F00]">Asr Prayer</span>
                   </div>
                 </div>
-                <button className="w-full py-2 bg-[#74512D] text-white rounded-lg hover:bg-[#74512D]/90 transition-colors">
+                <Link to={'/tracker'} >
+                <button className="w-full py-2 bg-[#74512D] text-white rounded-lg hover:bg-[#74512D]/90 transition-colors cursor-pointer" >
                   Update Today's Tracker
                 </button>
+                </Link>
               </div>
             </div>
           </div>

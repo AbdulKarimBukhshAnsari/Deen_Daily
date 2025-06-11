@@ -1,4 +1,6 @@
 import FeatureSection from "./components/FeatureSection";
+import Footer from "./components/FooterSection";
+import HadithSection from "./components/HadithSection";
 import HeroSection from "./components/HeroSection";
 
 function Dashboarad() {
@@ -6,6 +8,8 @@ function Dashboarad() {
     <>
       <HeroSection />
       <FeatureSection />
+      <HadithSection />
+      <Footer />
     </>
   );
 }
