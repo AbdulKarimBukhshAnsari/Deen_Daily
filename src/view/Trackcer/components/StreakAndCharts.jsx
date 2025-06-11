@@ -1,22 +1,50 @@
-import { Star, Trophy, Book } from "lucide-react";
+import { Star, Trophy, Book, Table2, Filter } from "lucide-react";
 import { useState, useEffect } from "react";
 import { formatDate } from "../../../utils/dateUtils";
+import { format } from "date-fns";
+import ChartComponent from "../Charts/ChartComponent";
+
 
 function StreakAndCharts() {
   const [streakData, setStreakData] = useState({
     currentStreak: 0,
     bestStreak: 0,
-    quranStreak: 0
+    quranStreak: 0,
   });
 
-  useEffect(() => {
-    calculateStreaks();
-  }, []);
+  const [trackerData, setTrackerData] = useState({
+    prayerData: {},
+    quranData: {},
+  });
 
-  const calculateStreaks = () => {
-    // Get prayer tracker data
+  const [showTable, setShowTable] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [records, setRecords] = useState([]);
+
+  const loadTrackerData = () => {
     const prayerData = JSON.parse(localStorage.getItem("prayerTrackerData") || "{}");
     const quranData = JSON.parse(localStorage.getItem("QuranTrackerData") || "{}");
+    setTrackerData({ prayerData, quranData });
+  };
+
+  useEffect(() => {
+    loadTrackerData(); // 1st: load from localStorage and set state
+  }, []);
+
+  useEffect(() => {
+    // 2nd: once trackerData is updated, then calculate streaks
+    if (
+      trackerData.prayerData &&
+      trackerData.quranData &&
+      (Object.keys(trackerData.prayerData).length > 0 || Object.keys(trackerData.quranData).length > 0)
+    ) {
+      console.log('Tracker Data' , trackerData);
+      calculateStreaks(trackerData);
+    }
+  }, [trackerData]);
+
+  const calculateStreaks = (data) => {
+    const { prayerData, quranData } = data;
 
     let currentStreak = 0;
     let bestStreak = 0;
@@ -29,11 +57,11 @@ function StreakAndCharts() {
 
       for (let i = dates.length - 1; i >= 0; i--) {
         const prayers = prayerData.history[dates[i]];
-        
-        if (prayers == 5) { // Consider streak if at 5 prayers are completed
+
+        if (prayers == 5) {
           tempStreak++;
           bestStreak = Math.max(bestStreak, tempStreak);
-          if (i === dates.length - 1) { // If it's the most recent day
+          if (i === dates.length - 1) {
             currentStreak = tempStreak;
           }
         } else {
@@ -41,9 +69,8 @@ function StreakAndCharts() {
         }
       }
 
-      // Check today's prayers
       if (prayerData.prayers) {
-        const todayPrayers = prayerData.prayers.filter(p => p.completed).length;
+        const todayPrayers = prayerData.prayers.filter((p) => p.completed).length;
         if (todayPrayers == 5) {
           currentStreak++;
           bestStreak = Math.max(bestStreak, currentStreak);
@@ -55,7 +82,7 @@ function StreakAndCharts() {
     if (quranData.history) {
       let tempStreak = 0;
       const dates = Object.keys(quranData.history).sort();
-      
+
       for (let i = dates.length - 1; i >= 0; i--) {
         if (quranData.history[dates[i]] > 0) {
           tempStreak++;
@@ -64,8 +91,10 @@ function StreakAndCharts() {
         }
       }
 
-      // Check today's reading
-      if (quranData.currentDate === formatDate(new Date()) && quranData.tilawatPages > 0) {
+      if (
+        quranData.currentDate === formatDate(new Date()) &&
+        quranData.tilawatPages > 0
+      ) {
         tempStreak++;
       }
 
@@ -75,51 +104,186 @@ function StreakAndCharts() {
     setStreakData({
       currentStreak,
       bestStreak,
-      quranStreak
+      quranStreak,
     });
   };
 
+  const prepareMonthlyRecords = (prayerHistory, quranHistory, month) => {
+    const currentYear = new Date().getFullYear();
+    const records = [];
+    
+    // Get all unique dates from both histories
+    const allDates = new Set([
+      ...Object.keys(prayerHistory || {}),
+      ...Object.keys(quranHistory || {})
+    ]);
+
+    // Convert to array and sort
+    const sortedDates = Array.from(allDates).sort((a, b) => new Date(b) - new Date(a));
+
+    // Filter for selected month
+    const filteredDates = sortedDates.filter(date => {
+      const dateObj = new Date(date);
+      return dateObj.getMonth() === month && dateObj.getFullYear() === currentYear;
+    });
+
+    // Create records
+    filteredDates.forEach(date => {
+      records.push({
+        date: date,
+        prayersCompleted: prayerHistory?.[date] || 0,
+        quranPages: quranHistory?.[date] || 0
+      });
+    });
+
+    return records;
+  };
+
+  useEffect(() => {
+    if (trackerData.prayerData.history || trackerData.quranData.history) {
+      const monthlyRecords = prepareMonthlyRecords(
+        trackerData.prayerData.history,
+        trackerData.quranData.history,
+        selectedMonth
+      );
+      setRecords(monthlyRecords);
+    }
+  }, [selectedMonth, trackerData]);
+
   return (
-    <div className="bg-white/70 p-6 rounded-lg shadow-xl border-2 border-[#74512D]/20 backdrop-blur-sm">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <div className="w-full bg-white/70 p-4 sm:p-6 rounded-lg shadow-xl backdrop-blur-sm space-y-6">
+      {/* Streaks Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Current Streak */}
-        <div className="p-6 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A]">
-          <div className="flex items-center gap-4">
-            <div className="p-4 bg-[#74512D33] rounded-full">
-              <Star className="text-[#74512D] h-8 w-8" />
+        <div className="p-4 sm:p-6 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A]">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="p-3 sm:p-4 bg-[#74512D33] rounded-full">
+              <Star className="text-[#74512D] h-6 w-6 sm:h-8 sm:w-8" />
             </div>
             <div>
-              <p className="text-[#9B7E5D] text-lg">Current Streak</p>
-              <p className="text-4xl font-bold text-[#74512D]">{streakData.currentStreak} days</p>
+              <p className="text-[#9B7E5D] text-base sm:text-lg">Current Streak</p>
+              <p className="text-2xl sm:text-4xl font-bold text-[#74512D]">
+                {streakData.currentStreak} days
+              </p>
             </div>
           </div>
         </div>
 
         {/* Best Streak */}
-        <div className="p-6 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A]">
-          <div className="flex items-center gap-4">
-            <div className="p-4 bg-[#74512D33] rounded-full">
-              <Trophy className="text-[#74512D] h-8 w-8" />
+        <div className="p-4 sm:p-6 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A]">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="p-3 sm:p-4 bg-[#74512D33] rounded-full">
+              <Trophy className="text-[#74512D] h-6 w-6 sm:h-8 sm:w-8" />
             </div>
             <div>
-              <p className="text-[#9B7E5D] text-lg">Best Streak</p>
-              <p className="text-4xl font-bold text-[#74512D]">{streakData.bestStreak} days</p>
+              <p className="text-[#9B7E5D] text-base sm:text-lg">Best Streak</p>
+              <p className="text-2xl sm:text-4xl font-bold text-[#74512D]">
+                {streakData.bestStreak} days
+              </p>
             </div>
           </div>
         </div>
 
         {/* Quran Streak */}
-        <div className="p-6 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A]">
-          <div className="flex items-center gap-4">
-            <div className="p-4 bg-[#74512D33] rounded-full">
-              <Book className="text-[#74512D] h-8 w-8" />
+        <div className="p-4 sm:p-6 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A] sm:col-span-2 lg:col-span-1">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="p-3 sm:p-4 bg-[#74512D33] rounded-full">
+              <Book className="text-[#74512D] h-6 w-6 sm:h-8 sm:w-8" />
             </div>
             <div>
-              <p className="text-[#9B7E5D] text-lg">Quran Streak</p>
-              <p className="text-4xl font-bold text-[#74512D]">{streakData.quranStreak} days</p>
+              <p className="text-[#9B7E5D] text-base sm:text-lg">Quran Streak</p>
+              <p className="text-2xl sm:text-4xl font-bold text-[#74512D]">
+                {streakData.quranStreak} days
+              </p>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Charts Section */}
+      {trackerData.prayerData.history && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <div className="w-full h-[350px] sm:h-[400px] p-4 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A]">
+            <ChartComponent 
+              data={trackerData.prayerData} 
+              chartTitle="🕌 Namaz Tracker - Last 7 Days"
+              axisValue="Prayers Completed"
+              mainColor="#4F7942"
+              type="Namaz"
+            />
+          </div>
+          <div className="w-full h-[350px] sm:h-[400px] p-4 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A]">
+            <ChartComponent 
+              data={trackerData.quranData} 
+              chartTitle="📖 Quran Reading - Last 7 Days"
+              axisValue="Pages Read"
+              mainColor="#74512D"
+              type="Quran"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Records View */}
+      <div className="mt-6">
+        <div className="flex justify-between items-center">
+          <button
+            onClick={() => setShowTable(!showTable)}
+            className="flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-300 bg-[#74512D] text-white hover:bg-[#5A3E22] cursor-pointer"
+          >
+            <Table2 className="h-5 w-5" />
+            {showTable ? 'Hide Records' : 'View Records'}
+          </button>
+
+          <div className="flex items-center gap-2">
+            <Filter className="h-5 w-5 text-[#74512D]" />
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(Number(e.target.value))}
+              className="p-2 rounded-lg border-2 border-[#74512D33] bg-white/50 text-[#74512D]"
+            >
+              {Array.from({ length: 12 }, (_, i) => (
+                <option key={i} value={i}>
+                  {new Date(2024, i).toLocaleString('default', { month: 'long' })}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Records Table */}
+        {showTable && (
+          <div className="mt-6 overflow-x-auto">
+            {records.length > 0 ? (
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-[#74512D1A]">
+                    <th className="p-3 text-left font-serif text-[#74512D]">Date</th>
+                    <th className="p-3 text-left font-serif text-[#74512D]">Prayers Completed</th>
+                    <th className="p-3 text-left font-serif text-[#74512D]">Quran Pages</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {records.map((record, index) => (
+                    <tr key={index} className="border-b border-[#74512D1A] hover:bg-[#74512D0D]">
+                      <td className="p-3 text-[#4E1F00]">
+                        {format(new Date(record.date), 'dd MMM yyyy')}
+                      </td>
+                      <td className="p-3 text-[#4E1F00]">{record.prayersCompleted}/5</td>
+                      <td className="p-3 text-[#4E1F00]">{record.quranPages}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="text-center p-6 bg-[#74512D0D] rounded-lg">
+                <p className="text-[#74512D] text-lg">
+                  No records available for {new Date(2024, selectedMonth).toLocaleString('default', { month: 'long' })}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

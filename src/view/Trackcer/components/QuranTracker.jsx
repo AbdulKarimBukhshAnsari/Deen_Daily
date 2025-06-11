@@ -18,7 +18,9 @@ function QuranTracker() {
 
     const parsedData = JSON.parse(savedData)
 
-    if(savedData !== todayDate) {
+    console.log('Parsed Data' , parsedData);
+
+    if(parsedData.currentDate !== todayDate) {
       const daysBetween = getDaysBetweenDates(new Date(parsedData.currentDate), new Date(todayDate));
       const newHistory = { ...parsedData.history };
       
@@ -69,6 +71,7 @@ function QuranTracker() {
           <input
             type="number"
             min="1"
+            max= '30'
             value={tilawatTracker.tilawatPages}
             onChange={(e) =>
                 setTilawatTracker(()=> ({...tilawatTracker , tilawatPages : e.target.value }))
