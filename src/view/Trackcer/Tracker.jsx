@@ -4,6 +4,7 @@ import { Heart } from "lucide-react";
 import HeaderNextPrayer from "./components/HeaderNextPrayer";
 import PrayerTimes from "./components/PrayerTimes";
 import PrayerTracker from "./components/PrayerTracker";
+import QuranTracker from "./components/QuranTracker";
 
 
 function Tracker() {
@@ -25,6 +26,7 @@ function Tracker() {
             <PrayerTimes prayerTimes={prayerTimes} />
             <PrayerTracker />
           </div>
+          <QuranTracker />
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ const FALLBACK_LAT = 24.8607;
 const FALLBACK_LNG = 67.0011;
 
 function HeaderNextPrayer({ prayerTimes, setPrayerTimes}) {
-  console.log('Hello')
+  
   const [currentDate, setCurrentDate] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentPrayer, setCurrentPrayer] = useState(null);
@@ -109,7 +109,7 @@ function HeaderNextPrayer({ prayerTimes, setPrayerTimes}) {
         return start <= now && now < adjustedEnd;
       });
 
-      console.log('Active Prayer:', activePrayer?.name);
+   
       setCurrentPrayer(activePrayer?.name || "None");
     }
   }, [prayerTimes, currentTime]);

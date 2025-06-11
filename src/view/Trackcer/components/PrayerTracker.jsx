@@ -15,6 +15,7 @@ function PrayerTracker() {
     const today = formatDate(new Date());
     const savedData = localStorage.getItem("prayerTrackerData");
     
+    // checking whether the history exists or not in the local Storage 
     if (!savedData) {
       return {
         currentDate: today,
