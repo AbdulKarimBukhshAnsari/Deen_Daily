@@ -30,7 +30,7 @@ function StreakAndCharts() {
       for (let i = dates.length - 1; i >= 0; i--) {
         const prayers = prayerData.history[dates[i]];
         
-        if (prayers == 3) { // Consider streak if at 5 prayers are completed
+        if (prayers == 5) { // Consider streak if at 5 prayers are completed
           tempStreak++;
           bestStreak = Math.max(bestStreak, tempStreak);
           if (i === dates.length - 1) { // If it's the most recent day
@@ -44,7 +44,7 @@ function StreakAndCharts() {
       // Check today's prayers
       if (prayerData.prayers) {
         const todayPrayers = prayerData.prayers.filter(p => p.completed).length;
-        if (todayPrayers == 3) {
+        if (todayPrayers == 5) {
           currentStreak++;
           bestStreak = Math.max(bestStreak, currentStreak);
         }
