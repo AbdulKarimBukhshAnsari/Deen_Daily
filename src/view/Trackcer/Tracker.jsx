@@ -5,6 +5,7 @@ import HeaderNextPrayer from "./components/HeaderNextPrayer";
 import PrayerTimes from "./components/PrayerTimes";
 import PrayerTracker from "./components/PrayerTracker";
 import QuranTracker from "./components/QuranTracker";
+import StreakAndCharts from "./components/StreakAndCharts";
 
 
 function Tracker() {
@@ -27,6 +28,7 @@ function Tracker() {
             <PrayerTracker />
           </div>
           <QuranTracker />
+          <StreakAndCharts />
         </div>
       </div>
     </div>
