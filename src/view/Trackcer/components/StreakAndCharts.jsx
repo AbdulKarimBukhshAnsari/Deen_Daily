@@ -46,65 +46,67 @@ function StreakAndCharts() {
   const calculateStreaks = (data) => {
     const { prayerData, quranData } = data;
 
+    // Initialize with zeros
     let currentStreak = 0;
     let bestStreak = 0;
     let quranStreak = 0;
 
-    // Calculate Prayer Streaks
-    if (prayerData.history) {
-      const dates = Object.keys(prayerData.history).sort();
-      let tempStreak = 0;
+    // Only calculate if history exists and has entries
+    if (prayerData.history && Object.keys(prayerData.history).length > 0) {
+        const dates = Object.keys(prayerData.history).sort();
+        let tempStreak = 0;
 
-      for (let i = dates.length - 1; i >= 0; i--) {
-        const prayers = prayerData.history[dates[i]];
+        for (let i = dates.length - 1; i >= 0; i--) {
+            const prayers = prayerData.history[dates[i]];
 
-        if (prayers == 5) {
-          tempStreak++;
-          bestStreak = Math.max(bestStreak, tempStreak);
-          if (i === dates.length - 1) {
-            currentStreak = tempStreak;
-          }
-        } else {
-          tempStreak = 0;
+            if (prayers == 5) {
+                tempStreak++;
+                bestStreak = Math.max(bestStreak, tempStreak);
+                if (i === dates.length - 1) {
+                    currentStreak = tempStreak;
+                }
+            } else {
+                tempStreak = 0;
+            }
         }
-      }
 
-      if (prayerData.prayers) {
-        const todayPrayers = prayerData.prayers.filter((p) => p.completed).length;
-        if (todayPrayers == 5) {
-          currentStreak++;
-          bestStreak = Math.max(bestStreak, currentStreak);
+        // Check today's prayers only if there's history
+        if (prayerData.prayers) {
+            const todayPrayers = prayerData.prayers.filter((p) => p.completed).length;
+            if (todayPrayers == 5) {
+                currentStreak++;
+                bestStreak = Math.max(bestStreak, currentStreak);
+            }
         }
-      }
     }
 
-    // Calculate Quran Streak
-    if (quranData.history) {
-      let tempStreak = 0;
-      const dates = Object.keys(quranData.history).sort();
+    // Calculate Quran Streak only if history exists
+    if (quranData.history && Object.keys(quranData.history).length > 0) {
+        let tempStreak = 0;
+        const dates = Object.keys(quranData.history).sort();
 
-      for (let i = dates.length - 1; i >= 0; i--) {
-        if (quranData.history[dates[i]] > 0) {
-          tempStreak++;
-        } else {
-          break;
+        for (let i = dates.length - 1; i >= 0; i--) {
+            if (quranData.history[dates[i]] > 0) {
+                tempStreak++;
+            } else {
+                break;
+            }
         }
-      }
 
-      if (
-        quranData.currentDate === formatDate(new Date()) &&
-        quranData.tilawatPages > 0
-      ) {
-        tempStreak++;
-      }
+        if (
+            quranData.currentDate === formatDate(new Date()) &&
+            quranData.tilawatPages > 0
+        ) {
+            tempStreak++;
+        }
 
-      quranStreak = tempStreak;
+        quranStreak = tempStreak;
     }
 
     setStreakData({
-      currentStreak,
-      bestStreak,
-      quranStreak,
+        currentStreak,
+        bestStreak,
+        quranStreak,
     });
   };
 
@@ -201,27 +203,31 @@ function StreakAndCharts() {
       </div>
 
       {/* Charts Section */}
-      {trackerData.prayerData.history && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-          <div className="w-full h-[350px] sm:h-[400px] p-4 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A]">
-            <ChartComponent 
-              data={trackerData.prayerData} 
-              chartTitle="🕌 Namaz Tracker - Last 7 Days"
-              axisValue="Prayers Completed"
-              mainColor="#4F7942"
-              type="Namaz"
-            />
+      {trackerData.prayerData.history && Object.keys(trackerData.prayerData.history).length > 6 ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              <div className="w-full h-[350px] sm:h-[400px] p-4 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A]">
+                  <ChartComponent 
+                      data={trackerData.prayerData} 
+                      chartTitle="🕌 Namaz Tracker - Last 7 Days"
+                      axisValue="Prayers Completed"
+                      mainColor="#4F7942"
+                      type="Namaz"
+                  />
+              </div>
+              <div className="w-full h-[350px] sm:h-[400px] p-4 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A]">
+                  <ChartComponent 
+                      data={trackerData.quranData} 
+                      chartTitle="📖 Quran Reading - Last 7 Days"
+                      axisValue="Pages Read"
+                      mainColor="#74512D"
+                      type="Quran"
+                  />
+              </div>
           </div>
-          <div className="w-full h-[350px] sm:h-[400px] p-4 bg-gradient-to-r from-[#74512D0D] to-[#74512D1A] rounded-lg border-2 border-[#74512D1A]">
-            <ChartComponent 
-              data={trackerData.quranData} 
-              chartTitle="📖 Quran Reading - Last 7 Days"
-              axisValue="Pages Read"
-              mainColor="#74512D"
-              type="Quran"
-            />
+      ) : (
+          <div className="p-6 bg-[#74512D0D] rounded-lg text-center">
+              <p className="text-[#74512D] text-lg">Start tracking your prayers and Quran reading to see your progress charts!</p>
           </div>
-        </div>
       )}
 
       {/* Records View */}
@@ -254,7 +260,15 @@ function StreakAndCharts() {
         {/* Records Table */}
         {showTable && (
           <div className="mt-6 overflow-x-auto">
-            {records.length > 0 ? (
+            {(!trackerData.prayerData.history || !trackerData.quranData.history || 
+              (Object.keys(trackerData.prayerData.history).length === 0 && 
+               Object.keys(trackerData.quranData.history).length === 0)) ? (
+                <div className="text-center p-6 bg-[#74512D0D] rounded-lg">
+                    <p className="text-[#74512D] text-lg">
+                        Start your journey by tracking your daily prayers and Quran reading!
+                    </p>
+                </div>
+            ) : records.length > 0 ? (
               <table className="w-full">
                 <thead>
                   <tr className="bg-[#74512D1A]">
