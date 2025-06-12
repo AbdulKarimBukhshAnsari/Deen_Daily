@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
-import FeelingInput from "./components/feelingInput";
+import FeelingInput from './components/FeelingInput'
 import PageDecorator from "../../components/ui/PageDecorator";
 import MoodProvider from "../../config/context/MoodProvider";
 import DeedsList from "./components/deedsList";
