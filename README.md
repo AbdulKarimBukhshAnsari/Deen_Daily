@@ -55,3 +55,7 @@ git clone https://github.com/AbdulKarimBukhshAnsari/Deen_Daily.git
 cd Deen_Daily
 npm install
 npm run dev
+```
+### Live Website Link 
+-You can visit the Live Website 
+[Deen Daily Live](https://deeendaily.netify.app/)
