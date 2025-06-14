@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState ,useEffect } from "react";
 import { Book, Save } from "lucide-react";
 import { formatDate, getDaysBetweenDates } from "../../../utils/dateUtils";
 import toast from 'react-hot-toast';
@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 function QuranTracker() {
   const [tilawatTracker, setTilawatTracker] = useState(() => {
     const todayDate = formatDate(new Date()); 
+    
     const savedData = localStorage.getItem('QuranTrackerData');
     
     if(!savedData) {
@@ -19,8 +20,10 @@ function QuranTracker() {
     const parsedData = JSON.parse(savedData)
 
     console.log('Parsed Data' , parsedData);
+    
 
     if(parsedData.currentDate !== todayDate) {
+    
       const daysBetween = getDaysBetweenDates(new Date(parsedData.currentDate), new Date(todayDate));
       const newHistory = { ...parsedData.history };
       
@@ -45,6 +48,11 @@ function QuranTracker() {
     return parsedData ;
     
   });
+
+    useEffect(() => {
+        localStorage.setItem("QuranTrackerData", JSON.stringify(tilawatTracker));
+      }, [tilawatTracker]);
+    
   
   // to save the data of the Quran Reading in the local storage 
   const saveTilawatPages = () => {

@@ -58,4 +58,5 @@ npm run dev
 ```
 ### Live Website Link 
 -You can visit the Live Website 
-[Deen Daily Live](https://deeendaily.netify.app/)
+https://deeendaily.netlify.app
+-copy the link and then try it .
